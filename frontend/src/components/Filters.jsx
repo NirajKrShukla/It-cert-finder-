@@ -53,7 +53,14 @@ export default function Filters({ filters, setFilters }) {
             </Section>
 
             <Section title="Price (USD)">
-                <div className="flex items-center gap-2 w-full">
+                <button
+                    onClick={() => setFilters({ ...filters, max_price: filters.max_price === "0" ? "" : "0", min_price: "" })}
+                    className={`chip w-full justify-center ${filters.max_price === "0" ? "active" : "chip-mint"}`}
+                    data-testid="filter-free-only"
+                >
+                    {filters.max_price === "0" ? "✓ Free only" : "🎁 Free certifications only"}
+                </button>
+                <div className="flex items-center gap-2 w-full mt-2">
                     <input type="number" placeholder="Min" className="input font-mono text-sm !py-2"
                         value={filters.min_price || ""} onChange={e => setFilters({ ...filters, min_price: e.target.value })}
                         data-testid="filter-min-price" />

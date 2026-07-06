@@ -104,6 +104,11 @@ export default function Home() {
 
                             <div className="mt-4 flex flex-wrap gap-2 items-center font-mono text-[11px] text-[#7D8590]">
                                 <span>Try:</span>
+                                <button onClick={() => { setQueryInput(""); setFilters({ max_price: "0" }); }}
+                                    className="border border-[#39FF6A] text-[#39FF6A] px-2 py-1 hover:bg-[#39FF6A] hover:text-[#0A0E14] transition-colors font-bold"
+                                    data-testid="quick-search-free">
+                                    🎁 Free only
+                                </button>
                                 {["AWS AI Practitioner", "CKA", "CISSP", "Oracle Java 21", "MongoDB", "AZ-104"].map(q => (
                                     <button key={q} onClick={() => { setQueryInput(q); setFilters({ ...filters, q }); }}
                                         className="border border-[#30363D] px-2 py-1 hover:border-[#39FF6A] hover:text-[#39FF6A] transition-colors"
