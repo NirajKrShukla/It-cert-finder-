@@ -283,11 +283,48 @@ async def list_paths():
     result = []
     for p in LEARNING_PATHS:
         certs = await db.certificates.find({"slug": {"$in": p["slugs"]}}, {"_id": 0, "slug": 1, "name": 1, "vendor": 1, "level": 1, "price_usd": 1}).to_list(50)
-        # preserve order
         by_slug = {c["slug"]: c for c in certs}
         ordered = [by_slug[s] for s in p["slugs"] if s in by_slug]
         result.append({**p, "certs": ordered, "total_cost": sum(c.get("price_usd", 0) for c in ordered)})
     return {"paths": result}
+
+# ------------ Shared paths ------------
+class SharedPathIn(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    slugs: List[str] = Field(default_factory=list)
+
+@api.post("/shared-paths")
+async def create_shared_path(payload: SharedPathIn, user: dict = Depends(get_current_user)):
+    if not payload.slugs:
+        fav = await db.favorites.find_one({"user_id": user["id"]}, {"_id": 0})
+        payload.slugs = (fav or {}).get("slugs", [])
+    if not payload.slugs:
+        raise HTTPException(status_code=400, detail="No certificates to share. Save some first.")
+    share_id = uuid.uuid4().hex[:12]
+    doc = {
+        "share_id": share_id,
+        "user_id": user["id"],
+        "author_name": user.get("name", "Anonymous"),
+        "name": payload.name.strip(),
+        "slugs": payload.slugs,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.shared_paths.insert_one(doc)
+    return {"share_id": share_id, "url": f"/path/{share_id}"}
+
+@api.get("/shared-paths/{share_id}")
+async def get_shared_path(share_id: str):
+    doc = await db.shared_paths.find_one({"share_id": share_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Path not found")
+    certs = await db.certificates.find({"slug": {"$in": doc["slugs"]}}, {"_id": 0}).to_list(500)
+    by_slug = {c["slug"]: c for c in certs}
+    ordered = [by_slug[s] for s in doc["slugs"] if s in by_slug]
+    for c in ordered:
+        c["trending"] = c["slug"] in TRENDING_SLUGS
+    doc["certs"] = ordered
+    doc["total_cost"] = sum(c.get("price_usd", 0) for c in ordered)
+    return doc
 
 # ------------ AI Enrichment (Claude) ------------
 class AIQueryIn(BaseModel):

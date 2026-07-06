@@ -9,6 +9,7 @@ import CertificateDetail from "@/pages/CertificateDetail";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
+import SharedPath from "@/pages/SharedPath";
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                         <Route path="/certificate/:slug" element={<CertificateDetail />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
+                        <Route path="/path/:shareId" element={<SharedPath />} />
                         <Route path="/dashboard" element={
                             <ProtectedRoute><Dashboard /></ProtectedRoute>
                         } />

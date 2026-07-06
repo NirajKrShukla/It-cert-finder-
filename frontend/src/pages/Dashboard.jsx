@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import CertificateCard from "@/components/CertificateCard";
-import { FaBookmark, FaArrowRight } from "react-icons/fa6";
+import { FaBookmark, FaArrowRight, FaShareNodes } from "react-icons/fa6";
+import { toast } from "sonner";
 
 export default function Dashboard() {
     const { user } = useAuth();
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sharing, setSharing] = useState(false);
 
     useEffect(() => {
         api.get("/favorites")
@@ -16,6 +18,22 @@ export default function Dashboard() {
             .catch(() => setItems([]))
             .finally(() => setLoading(false));
     }, []);
+
+    const share = async () => {
+        if (!items.length) return toast.info("Save some certs first");
+        const name = prompt("Name your public learning path:", `${user?.name || "My"}'s Path`);
+        if (!name) return;
+        setSharing(true);
+        try {
+            const { data } = await api.post("/shared-paths", { name, slugs: items.map(i => i.slug) });
+            const url = `${window.location.origin}${data.url}`;
+            await navigator.clipboard.writeText(url);
+            toast.success("Public link copied to clipboard");
+            window.open(data.url, "_blank");
+        } catch (e) {
+            toast.error(e.response?.data?.detail || "Failed to create share link");
+        } finally { setSharing(false); }
+    };
 
     const total = items.reduce((s, c) => s + (c.price_usd || 0), 0);
 
@@ -53,6 +71,9 @@ export default function Dashboard() {
                     <div className="font-mono text-[11px] uppercase tracking-widest text-[#7D8590]">// your saved certifications</div>
                 </div>
                 <Link to="/" className="btn" data-testid="dashboard-browse">Browse directory <FaArrowRight /></Link>
+                <button onClick={share} disabled={sharing || !items.length} className="btn btn-primary ml-2" data-testid="share-path-btn">
+                    <FaShareNodes /> {sharing ? "Creating…" : "Share as public path"}
+                </button>
             </div>
 
             {loading ? (
