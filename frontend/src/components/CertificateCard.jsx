@@ -32,7 +32,10 @@ export default function CertificateCard({ cert }) {
                         <div className={`chip lvl-${cert.level} mt-1.5`} data-testid={`cert-level-${cert.slug}`}>{cert.level}</div>
                     </div>
                 </div>
-                {cert.ai_generated && (
+                {cert.trending && (
+                    <span className="chip chip-amber" data-testid={`trending-${cert.slug}`}>🔥 Trending</span>
+                )}
+                {cert.ai_generated && !cert.trending && (
                     <span className="chip chip-magenta">AI</span>
                 )}
             </div>

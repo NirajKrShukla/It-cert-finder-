@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import Filters from "@/components/Filters";
 import CertificateCard from "@/components/CertificateCard";
+import LearningPaths from "@/components/LearningPaths";
 import { FaMagnifyingGlass, FaWandMagicSparkles, FaArrowRight, FaBoltLightning, FaCircleNodes } from "react-icons/fa6";
 import { toast } from "sonner";
 
@@ -138,6 +139,9 @@ export default function Home() {
                     </div>
                 </div>
             </section>
+
+            {/* LEARNING PATHS */}
+            <LearningPaths />
 
             {/* LISTING */}
             <section className="max-w-[1400px] mx-auto px-6 lg:px-10 py-14">

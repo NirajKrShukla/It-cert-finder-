@@ -21,6 +21,38 @@ from pydantic import BaseModel, EmailStr, Field
 
 from certificates_data import CERTIFICATES_SEED
 
+TRENDING_SLUGS = {
+    "aws-ai-practitioner",
+    "cka-kubernetes",
+    "aws-solutions-architect-associate",
+    "az-104-azure-administrator",
+    "comptia-security-plus",
+    "oracle-java-se-21-professional",
+    "mongodb-developer-associate",
+    "hashicorp-terraform-associate",
+    "ai-900-azure-ai-fundamentals",
+    "cissp",
+}
+
+LEARNING_PATHS = [
+    {"id": "java", "name": "Java Developer Ladder", "tagline": "Zero → Master architect on the JVM.", "accent": "amber",
+     "slugs": ["oracle-java-se-8-associate", "oracle-java-se-17-professional", "oracle-java-se-21-professional", "oracle-java-enterprise-architect-master"]},
+    {"id": "security", "name": "Cybersecurity Track", "tagline": "Practitioner → Analyst → Leadership.", "accent": "magenta",
+     "slugs": ["comptia-security-plus", "comptia-cysa-plus", "cissp"]},
+    {"id": "aws-cloud", "name": "AWS Cloud Path", "tagline": "Practitioner → Associate → Professional.", "accent": "mint",
+     "slugs": ["aws-cloud-practitioner", "aws-solutions-architect-associate", "aws-solutions-architect-professional"]},
+    {"id": "azure", "name": "Azure Admin Path", "tagline": "AZ-900 → AZ-104 → AZ-305.", "accent": "blue",
+     "slugs": ["az-900-azure-fundamentals", "az-104-azure-administrator", "az-305-azure-architect"]},
+    {"id": "ai", "name": "AI / ML Engineer", "tagline": "Fundamentals → Engineer → Specialty.", "accent": "magenta",
+     "slugs": ["ai-900-azure-ai-fundamentals", "aws-ai-practitioner", "ai-102-azure-ai-engineer", "aws-ml-engineer-associate", "gcp-professional-ml-engineer"]},
+    {"id": "network", "name": "Network Engineer", "tagline": "A+ → Network+ → CCNA → CCNP.", "accent": "blue",
+     "slugs": ["comptia-a-plus", "comptia-network-plus", "cisco-ccna", "cisco-ccnp-enterprise"]},
+    {"id": "kubernetes", "name": "Cloud-Native / DevOps", "tagline": "Docker → Kubernetes → IaC.", "accent": "mint",
+     "slugs": ["docker-certified-associate", "cka-kubernetes", "hashicorp-terraform-associate"]},
+    {"id": "database", "name": "Database Engineer", "tagline": "SQL → NoSQL → Cloud DBs.", "accent": "amber",
+     "slugs": ["oracle-database-sql-associate", "mongodb-developer-associate", "azure-dp-300-database-admin", "snowflake-snowpro-core"]},
+]
+
 # ------------ Setup ------------
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
@@ -212,6 +244,8 @@ async def list_certs(
         ]
     cursor = db.certificates.find(query, {"_id": 0}).limit(limit)
     items = await cursor.to_list(limit)
+    for it in items:
+        it["trending"] = it.get("slug") in TRENDING_SLUGS
     if sort == "price_asc":
         items.sort(key=lambda x: x.get("price_usd", 0))
     elif sort == "price_desc":
@@ -237,7 +271,23 @@ async def get_cert(slug: str):
     doc = await db.certificates.find_one({"slug": slug}, {"_id": 0})
     if not doc:
         raise HTTPException(status_code=404, detail="Certificate not found")
+    doc["trending"] = slug in TRENDING_SLUGS
+    doc["in_paths"] = [
+        {"id": p["id"], "name": p["name"], "position": p["slugs"].index(slug) + 1, "total": len(p["slugs"])}
+        for p in LEARNING_PATHS if slug in p["slugs"]
+    ]
     return doc
+
+@api.get("/paths")
+async def list_paths():
+    result = []
+    for p in LEARNING_PATHS:
+        certs = await db.certificates.find({"slug": {"$in": p["slugs"]}}, {"_id": 0, "slug": 1, "name": 1, "vendor": 1, "level": 1, "price_usd": 1}).to_list(50)
+        # preserve order
+        by_slug = {c["slug"]: c for c in certs}
+        ordered = [by_slug[s] for s in p["slugs"] if s in by_slug]
+        result.append({**p, "certs": ordered, "total_cost": sum(c.get("price_usd", 0) for c in ordered)})
+    return {"paths": result}
 
 # ------------ AI Enrichment (Claude) ------------
 class AIQueryIn(BaseModel):

@@ -80,8 +80,22 @@ export default function CertificateDetail() {
                         <div className="flex flex-wrap gap-2 mt-4">
                             <span className={`chip lvl-${cert.level}`}>{cert.level}</span>
                             <span className="chip">{cert.domain}</span>
+                            {cert.trending && <span className="chip chip-amber">🔥 Trending</span>}
                             {cert.ai_generated && <span className="chip chip-magenta">AI enriched</span>}
                         </div>
+
+                        {cert.in_paths?.length > 0 && (
+                            <div className="mt-4 border-t border-[#21262D] pt-4" data-testid="in-paths">
+                                <div className="font-mono text-[10px] uppercase tracking-widest text-[#7D8590]">// featured in</div>
+                                <div className="flex flex-wrap gap-1.5 mt-2">
+                                    {cert.in_paths.map(p => (
+                                        <span key={p.id} className="chip chip-mint" title={`Step ${p.position} of ${p.total}`}>
+                                            {p.name} · {p.position}/{p.total}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         <div className="mt-6 border-t border-[#21262D] pt-5">
                             <div className="font-mono text-[10px] uppercase tracking-widest text-[#7D8590]">Exam Cost</div>
