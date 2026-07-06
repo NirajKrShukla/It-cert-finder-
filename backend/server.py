@@ -549,6 +549,49 @@ async def remove_favorite(slug: str, user: dict = Depends(get_current_user)):
     await db.favorites.update_one({"user_id": user["id"]}, {"$pull": {"slugs": slug}})
     return {"ok": True}
 
+# ------------ Analytics ------------
+class AnalyticsEventIn(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    variant: Optional[str] = None
+    meta: Optional[dict] = None
+    session_id: Optional[str] = None
+
+@api.post("/analytics/event")
+async def track_event(payload: AnalyticsEventIn, request: Request):
+    await db.analytics_events.insert_one({
+        "id": str(uuid.uuid4()),
+        "name": payload.name,
+        "variant": payload.variant,
+        "meta": payload.meta or {},
+        "session_id": payload.session_id,
+        "ua": request.headers.get("user-agent", "")[:200],
+        "ts": datetime.now(timezone.utc).isoformat(),
+    })
+    return {"ok": True}
+
+@api.get("/analytics/summary")
+async def analytics_summary(user: dict = Depends(get_current_user)):
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin only")
+    pipeline = [
+        {"$group": {"_id": {"name": "$name", "variant": "$variant"}, "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+    ]
+    rows = await db.analytics_events.aggregate(pipeline).to_list(1000)
+    events = [{"name": r["_id"]["name"], "variant": r["_id"].get("variant"), "count": r["count"]} for r in rows]
+    # Compute A/B CTR for ribbon
+    def get(name, variant):
+        for e in events:
+            if e["name"] == name and e["variant"] == variant:
+                return e["count"]
+        return 0
+    ab = {}
+    for v in ["A", "B"]:
+        views = get("ribbon_view", v)
+        clicks = get("ribbon_signup_click", v)
+        ab[v] = {"views": views, "clicks": clicks, "ctr": round(clicks / views * 100, 2) if views else 0}
+    return {"events": events, "ab_ribbon": ab}
+
 # ------------ Startup ------------
 async def seed_admin():
     admin_email = os.environ.get("ADMIN_EMAIL", "admin@certhub.com").lower()

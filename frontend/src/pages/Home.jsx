@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
+import { track, ribbonVariant } from "@/lib/analytics";
 import Filters from "@/components/Filters";
 import CertificateCard from "@/components/CertificateCard";
 import LearningPaths from "@/components/LearningPaths";
@@ -25,6 +26,15 @@ export default function Home() {
     const [queryInput, setQueryInput] = useState(filters.q || "");
     const [stats, setStats] = useState({ vendors: 0, domains: 0 });
     const [freeCerts, setFreeCerts] = useState([]);
+    const [variant] = useState(() => ribbonVariant());
+    const isGuest = !user || user === false;
+
+    // Fire ribbon view once per session when it's actually shown
+    useEffect(() => {
+        if (isGuest && freeCerts.length > 0) {
+            track("ribbon_view", variant, { free_count: freeCerts.length });
+        }
+    }, [isGuest, freeCerts.length, variant]);
 
     useEffect(() => {
         const clean = {};
@@ -150,25 +160,33 @@ export default function Home() {
             </section>
 
             {/* FREE-CERTS RIBBON (guests only) */}
-            {(!user || user === false) && freeCerts.length > 0 && (
-                <section className="border-b border-[#21262D] bg-gradient-to-r from-[#0F1B12] via-[#0A0E14] to-[#0F1B12]" data-testid="free-ribbon">
+            {isGuest && freeCerts.length > 0 && (
+                <section className="border-b border-[#21262D] bg-gradient-to-r from-[#0F1B12] via-[#0A0E14] to-[#0F1B12]" data-testid="free-ribbon" data-variant={variant}>
                     <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-10 relative">
                         <div className="absolute top-0 left-8 -translate-y-1/2 bg-[#39FF6A] text-[#0A0E14] font-mono text-[10px] uppercase tracking-widest font-bold px-3 py-1 flex items-center gap-1.5">
                             <FaGift /> Zero-dollar starter
                         </div>
                         <div className="grid lg:grid-cols-12 gap-8 items-center">
                             <div className="lg:col-span-4">
-                                <h2 className="font-display font-semibold text-3xl sm:text-4xl leading-tight">
-                                    Start with a <span className="text-[#39FF6A]">free cert</span>.
-                                </h2>
+                                {variant === "B" ? (
+                                    <h2 className="font-display font-semibold text-3xl sm:text-4xl leading-tight">
+                                        Get certified this weekend — <span className="text-[#39FF6A]">for $0</span>.
+                                    </h2>
+                                ) : (
+                                    <h2 className="font-display font-semibold text-3xl sm:text-4xl leading-tight">
+                                        Start with a <span className="text-[#39FF6A]">free cert</span>.
+                                    </h2>
+                                )}
                                 <p className="text-[#B1BAC4] mt-3 text-sm">
                                     Add a real credential to your resume this weekend — {freeCerts.length}+ industry-recognized certifications cost <span className="font-mono text-[#39FF6A]">$0</span>. Sign up to bookmark them, track your progress, and build a shareable learning path.
                                 </p>
                                 <div className="mt-5 flex flex-wrap gap-3">
-                                    <Link to="/register" className="btn btn-primary" data-testid="ribbon-signup-cta">
+                                    <Link to="/register" className="btn btn-primary" data-testid="ribbon-signup-cta"
+                                        onClick={() => track("ribbon_signup_click", variant)}>
                                         Sign up free <FaArrowRight />
                                     </Link>
-                                    <button onClick={() => setFilters({ max_price: "0" })} className="btn" data-testid="ribbon-show-free">
+                                    <button onClick={() => { track("ribbon_see_all_click", variant); setFilters({ max_price: "0" }); }}
+                                        className="btn" data-testid="ribbon-show-free">
                                         See all free
                                     </button>
                                 </div>
@@ -177,6 +195,7 @@ export default function Home() {
                                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                                     {freeCerts.slice(0, 6).map(c => (
                                         <Link key={c.slug} to={`/certificate/${c.slug}`}
+                                            onClick={() => track("ribbon_cert_click", variant, { slug: c.slug })}
                                             className="border border-[#21262D] bg-[#12171F] p-4 hover:border-[#39FF6A] transition-colors group"
                                             data-testid={`ribbon-free-${c.slug}`}>
                                             <div className="flex items-start justify-between gap-2">

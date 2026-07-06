@@ -11,6 +11,7 @@ import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
 import SharedPath from "@/pages/SharedPath";
 import Compare from "@/pages/Compare";
+import Analytics from "@/pages/Analytics";
 
 function App() {
     return (
@@ -25,6 +26,9 @@ function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/path/:shareId" element={<SharedPath />} />
                         <Route path="/compare" element={<Compare />} />
+                        <Route path="/admin/analytics" element={
+                            <ProtectedRoute><Analytics /></ProtectedRoute>
+                        } />
                         <Route path="/dashboard" element={
                             <ProtectedRoute><Dashboard /></ProtectedRoute>
                         } />
