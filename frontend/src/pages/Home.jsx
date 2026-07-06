@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { api } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
 import Filters from "@/components/Filters";
 import CertificateCard from "@/components/CertificateCard";
 import LearningPaths from "@/components/LearningPaths";
-import { FaMagnifyingGlass, FaWandMagicSparkles, FaArrowRight, FaBoltLightning, FaCircleNodes } from "react-icons/fa6";
+import { FaMagnifyingGlass, FaWandMagicSparkles, FaArrowRight, FaBoltLightning, FaCircleNodes, FaGift } from "react-icons/fa6";
 import { toast } from "sonner";
 
 export default function Home() {
+    const { user } = useAuth();
     const [params, setParams] = useSearchParams();
     const initialFilters = useMemo(() => {
         const o = {};
@@ -22,6 +24,7 @@ export default function Home() {
     const [aiLoading, setAiLoading] = useState(false);
     const [queryInput, setQueryInput] = useState(filters.q || "");
     const [stats, setStats] = useState({ vendors: 0, domains: 0 });
+    const [freeCerts, setFreeCerts] = useState([]);
 
     useEffect(() => {
         const clean = {};
@@ -31,6 +34,7 @@ export default function Home() {
 
     useEffect(() => {
         api.get("/certificates/facets").then(r => setStats({ vendors: r.data.vendors.length, domains: r.data.domains.length })).catch(() => {});
+        api.get("/certificates", { params: { max_price: 0, sort: "name", limit: 6 } }).then(r => setFreeCerts(r.data.items || [])).catch(() => {});
     }, []);
 
     const load = useCallback(async () => {
@@ -144,6 +148,52 @@ export default function Home() {
                     </div>
                 </div>
             </section>
+
+            {/* FREE-CERTS RIBBON (guests only) */}
+            {(!user || user === false) && freeCerts.length > 0 && (
+                <section className="border-b border-[#21262D] bg-gradient-to-r from-[#0F1B12] via-[#0A0E14] to-[#0F1B12]" data-testid="free-ribbon">
+                    <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-10 relative">
+                        <div className="absolute top-0 left-8 -translate-y-1/2 bg-[#39FF6A] text-[#0A0E14] font-mono text-[10px] uppercase tracking-widest font-bold px-3 py-1 flex items-center gap-1.5">
+                            <FaGift /> Zero-dollar starter
+                        </div>
+                        <div className="grid lg:grid-cols-12 gap-8 items-center">
+                            <div className="lg:col-span-4">
+                                <h2 className="font-display font-semibold text-3xl sm:text-4xl leading-tight">
+                                    Start with a <span className="text-[#39FF6A]">free cert</span>.
+                                </h2>
+                                <p className="text-[#B1BAC4] mt-3 text-sm">
+                                    Add a real credential to your resume this weekend — {freeCerts.length}+ industry-recognized certifications cost <span className="font-mono text-[#39FF6A]">$0</span>. Sign up to bookmark them, track your progress, and build a shareable learning path.
+                                </p>
+                                <div className="mt-5 flex flex-wrap gap-3">
+                                    <Link to="/register" className="btn btn-primary" data-testid="ribbon-signup-cta">
+                                        Sign up free <FaArrowRight />
+                                    </Link>
+                                    <button onClick={() => setFilters({ max_price: "0" })} className="btn" data-testid="ribbon-show-free">
+                                        See all free
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="lg:col-span-8">
+                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    {freeCerts.slice(0, 6).map(c => (
+                                        <Link key={c.slug} to={`/certificate/${c.slug}`}
+                                            className="border border-[#21262D] bg-[#12171F] p-4 hover:border-[#39FF6A] transition-colors group"
+                                            data-testid={`ribbon-free-${c.slug}`}>
+                                            <div className="flex items-start justify-between gap-2">
+                                                <div className="font-mono text-[10px] uppercase tracking-widest text-[#7D8590]">{c.vendor}</div>
+                                                <span className="chip chip-mint !py-0.5 !text-[9px]">FREE</span>
+                                            </div>
+                                            <div className="font-display font-semibold text-sm mt-2 leading-snug text-[#E6EDF3] group-hover:text-[#39FF6A] line-clamp-2">
+                                                {c.name}
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* LEARNING PATHS */}
             <LearningPaths />
