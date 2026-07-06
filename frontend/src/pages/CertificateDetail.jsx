@@ -55,40 +55,39 @@ export default function CertificateDetail() {
         }
     };
 
-    if (loading) return <div className="min-h-[60vh] grid place-items-center font-mono text-xs uppercase tracking-widest">Loading…</div>;
+    if (loading) return <div className="min-h-[60vh] grid place-items-center font-mono text-xs uppercase tracking-widest text-[#7D8590]">Loading…</div>;
     if (!cert) return (
         <div className="max-w-[1000px] mx-auto p-10">
-            <Link to="/" className="hard-btn hard-btn-outline"><FaArrowLeft /> Back</Link>
-            <div className="border border-black p-10 mt-6">
-                <div className="font-display text-3xl font-bold">Certificate not found.</div>
+            <Link to="/" className="btn btn-ghost"><FaArrowLeft /> Back</Link>
+            <div className="border border-[#21262D] bg-[#12171F] p-10 mt-6">
+                <div className="font-display text-3xl font-semibold">Certificate not found.</div>
             </div>
         </div>
     );
 
     return (
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8">
-            <Link to="/" className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest hover:text-[#002FA7]" data-testid="back-link">
+            <Link to="/" className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#7D8590] hover:text-[#39FF6A]" data-testid="back-link">
                 <FaArrowLeft /> Back to directory
             </Link>
 
             <div className="grid lg:grid-cols-12 gap-8 mt-6">
-                {/* LEFT sticky */}
                 <aside className="lg:col-span-4">
-                    <div className="lg:sticky lg:top-24 border border-black bg-white p-7">
-                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#52525B]">{cert.vendor}</div>
-                        <h1 className="font-display font-bold text-3xl leading-tight mt-2" data-testid="cert-detail-name">{cert.name}</h1>
+                    <div className="lg:sticky lg:top-24 border border-[#21262D] bg-[#12171F] p-7">
+                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#39FF6A]">// {cert.vendor}</div>
+                        <h1 className="font-display font-semibold text-3xl leading-tight mt-2 text-[#E6EDF3]" data-testid="cert-detail-name">{cert.name}</h1>
 
                         <div className="flex flex-wrap gap-2 mt-4">
-                            <span className={`badge-mono level-${cert.level}`}>{cert.level}</span>
-                            <span className="badge-mono">{cert.domain}</span>
-                            {cert.ai_generated && <span className="badge-mono badge-blue">AI enriched</span>}
+                            <span className={`chip lvl-${cert.level}`}>{cert.level}</span>
+                            <span className="chip">{cert.domain}</span>
+                            {cert.ai_generated && <span className="chip chip-magenta">AI enriched</span>}
                         </div>
 
-                        <div className="mt-6 border-t border-black pt-5">
-                            <div className="font-mono text-[10px] uppercase tracking-widest text-[#52525B]">Exam Cost</div>
-                            <div className="font-display font-bold text-5xl leading-none mt-2" data-testid="cert-detail-price">
+                        <div className="mt-6 border-t border-[#21262D] pt-5">
+                            <div className="font-mono text-[10px] uppercase tracking-widest text-[#7D8590]">Exam Cost</div>
+                            <div className="font-mono font-bold text-5xl leading-none mt-2 text-[#39FF6A]" data-testid="cert-detail-price">
                                 ${cert.price_usd}
-                                <span className="font-mono text-sm text-[#52525B] ml-2">{cert.currency}</span>
+                                <span className="font-mono text-sm text-[#7D8590] ml-2">{cert.currency}</span>
                             </div>
                         </div>
 
@@ -101,11 +100,11 @@ export default function CertificateDetail() {
 
                         <div className="mt-6 flex flex-col gap-3">
                             {cert.official_url && (
-                                <a href={cert.official_url} target="_blank" rel="noreferrer" className="hard-btn hard-btn-blue w-full" data-testid="official-link">
+                                <a href={cert.official_url} target="_blank" rel="noreferrer" className="btn btn-primary w-full" data-testid="official-link">
                                     View Official Page <FaArrowUpRightFromSquare className="text-xs" />
                                 </a>
                             )}
-                            <button onClick={toggleFav} className="hard-btn hard-btn-outline w-full" data-testid="favorite-btn">
+                            <button onClick={toggleFav} className="btn w-full" data-testid="favorite-btn">
                                 {isFav ? <FaBookmark /> : <FaRegBookmark />} {isFav ? "Saved" : "Save to Dashboard"}
                             </button>
                         </div>
@@ -115,12 +114,12 @@ export default function CertificateDetail() {
                 {/* RIGHT content */}
                 <main className="lg:col-span-8 space-y-8">
                     <Section title="Overview">
-                        <p className="text-lg leading-relaxed">{cert.description}</p>
+                        <p className="text-lg leading-relaxed text-[#B1BAC4]">{cert.description}</p>
                     </Section>
 
                     {cert.prerequisites && (
                         <Section title="Prerequisites">
-                            <p className="text-base leading-relaxed">{cert.prerequisites}</p>
+                            <p className="text-base leading-relaxed text-[#B1BAC4]">{cert.prerequisites}</p>
                         </Section>
                     )}
 
@@ -128,11 +127,11 @@ export default function CertificateDetail() {
                         <Section title="Best Video Courses">
                             <div className="grid sm:grid-cols-2 gap-3">
                                 {cert.videos.map((v, i) => (
-                                    <a key={i} href={v.url} target="_blank" rel="noreferrer" className="border border-black p-4 hover:bg-[#E4FF00] transition-colors flex items-start gap-3" data-testid={`video-link-${i}`}>
-                                        <FaYoutube className="text-2xl text-[#FF3B30] shrink-0 mt-0.5" />
+                                    <a key={i} href={v.url} target="_blank" rel="noreferrer" className="border border-[#21262D] bg-[#0A0E14] p-4 hover:border-[#39FF6A] transition-colors flex items-start gap-3" data-testid={`video-link-${i}`}>
+                                        <FaYoutube className="text-2xl text-[#FF5C57] shrink-0 mt-0.5" />
                                         <div>
-                                            <div className="font-bold leading-snug">{v.title}</div>
-                                            <div className="font-mono text-[10px] uppercase tracking-widest text-[#52525B] mt-1 truncate">Watch on YouTube ↗</div>
+                                            <div className="font-semibold leading-snug text-[#E6EDF3]">{v.title}</div>
+                                            <div className="font-mono text-[10px] uppercase tracking-widest text-[#7D8590] mt-1 truncate">Watch on YouTube ↗</div>
                                         </div>
                                     </a>
                                 ))}
@@ -143,20 +142,20 @@ export default function CertificateDetail() {
                     <Section title="Learning Docs & Resources">
                         <div className="grid sm:grid-cols-2 gap-3">
                             {cert.docs_url && (
-                                <a href={cert.docs_url} target="_blank" rel="noreferrer" className="border border-black p-5 hover:bg-[#F4F5F6] transition-colors flex items-start gap-3" data-testid="docs-link">
-                                    <FaBookOpen className="text-2xl shrink-0 mt-1" />
+                                <a href={cert.docs_url} target="_blank" rel="noreferrer" className="border border-[#21262D] bg-[#0A0E14] p-5 hover:border-[#39FF6A] transition-colors flex items-start gap-3" data-testid="docs-link">
+                                    <FaBookOpen className="text-2xl shrink-0 mt-1 text-[#39FF6A]" />
                                     <div>
-                                        <div className="font-bold">Official Study Guide</div>
-                                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#52525B] mt-1">Exam objectives & syllabus ↗</div>
+                                        <div className="font-semibold text-[#E6EDF3]">Official Study Guide</div>
+                                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#7D8590] mt-1">Exam objectives & syllabus ↗</div>
                                     </div>
                                 </a>
                             )}
                             {cert.practice_url && (
-                                <a href={cert.practice_url} target="_blank" rel="noreferrer" className="border border-black p-5 hover:bg-[#F4F5F6] transition-colors flex items-start gap-3" data-testid="practice-link">
-                                    <FaFileLines className="text-2xl shrink-0 mt-1" />
+                                <a href={cert.practice_url} target="_blank" rel="noreferrer" className="border border-[#21262D] bg-[#0A0E14] p-5 hover:border-[#39FF6A] transition-colors flex items-start gap-3" data-testid="practice-link">
+                                    <FaFileLines className="text-2xl shrink-0 mt-1 text-[#FFB020]" />
                                     <div>
-                                        <div className="font-bold">Practice Tests</div>
-                                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#52525B] mt-1">Sample questions ↗</div>
+                                        <div className="font-semibold text-[#E6EDF3]">Practice Tests</div>
+                                        <div className="font-mono text-[10px] uppercase tracking-widest text-[#7D8590] mt-1">Sample questions ↗</div>
                                     </div>
                                 </a>
                             )}

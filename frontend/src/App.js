@@ -25,7 +25,7 @@ function App() {
                             <ProtectedRoute><Dashboard /></ProtectedRoute>
                         } />
                     </Routes>
-                    <Toaster position="top-right" richColors />
+                    <Toaster position="top-right" theme="dark" richColors />
                 </AuthProvider>
             </BrowserRouter>
         </div>
