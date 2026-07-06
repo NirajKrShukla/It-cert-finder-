@@ -38,6 +38,10 @@ TRENDING_SLUGS = {
     "itil-4-foundation",
     "finops-certified-practitioner",
     "cobit-2019-foundation",
+    "grafana-certified-associate",
+    "amplitude-cdp-analyst",
+    "iapp-cipp-e",
+    "certified-ethereum-developer",
 }
 
 LEARNING_PATHS = [
@@ -67,6 +71,14 @@ LEARNING_PATHS = [
      "slugs": ["salesforce-associate", "salesforce-admin", "salesforce-platform-app-builder", "salesforce-sales-cloud-consultant", "salesforce-service-cloud-consultant"]},
     {"id": "finops", "name": "Cloud FinOps", "tagline": "Practitioner → FOCUS → Professional.", "accent": "amber",
      "slugs": ["finops-certified-practitioner", "finops-focus-analyst", "finops-certified-professional"]},
+    {"id": "sre", "name": "SRE / Observability", "tagline": "Metrics → Dashboards → DevOps.", "accent": "mint",
+     "slugs": ["datadog-fundamentals", "grafana-certified-associate", "prometheus-certified-associate", "gcp-professional-devops-engineer"]},
+    {"id": "analytics", "name": "Product Analytics", "tagline": "GA4 → Mixpanel → Amplitude.", "accent": "blue",
+     "slugs": ["ga4-google-analytics-iq", "mixpanel-certified-analyst", "amplitude-cdp-analyst"]},
+    {"id": "web3", "name": "Web3 / Blockchain", "tagline": "Bitcoin → Blockchain → Ethereum builder.", "accent": "magenta",
+     "slugs": ["certified-bitcoin-professional", "certified-blockchain-expert", "certified-ethereum-developer", "certified-blockchain-solution-architect"]},
+    {"id": "privacy", "name": "Data Privacy", "tagline": "Foundation → Technologist → Manager.", "accent": "amber",
+     "slugs": ["iapp-cipp-us", "iapp-cipt", "iapp-cipm"]},
 ]
 
 # ------------ Setup ------------
