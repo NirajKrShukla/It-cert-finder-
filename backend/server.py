@@ -567,10 +567,13 @@ app.include_router(api)
 # CORS
 frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:3000")
 extra = os.environ.get("CORS_ORIGINS", "").split(",")
-allowed = [o.strip() for o in [frontend_url, *extra] if o.strip() and o.strip() != "*"]
+raw = [o.strip() for o in [frontend_url, *extra] if o.strip()]
+use_regex = "*" in raw
+allowed = [o for o in raw if o != "*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed or ["http://localhost:3000"],
+    allow_origin_regex=".*" if use_regex else None,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
