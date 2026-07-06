@@ -32,6 +32,10 @@ TRENDING_SLUGS = {
     "hashicorp-terraform-associate",
     "ai-900-azure-ai-fundamentals",
     "cissp",
+    "pmp",
+    "psm-i",
+    "safe-agilist",
+    "itil-4-foundation",
 }
 
 LEARNING_PATHS = [
@@ -51,6 +55,10 @@ LEARNING_PATHS = [
      "slugs": ["docker-certified-associate", "cka-kubernetes", "hashicorp-terraform-associate"]},
     {"id": "database", "name": "Database Engineer", "tagline": "SQL → NoSQL → Cloud DBs.", "accent": "amber",
      "slugs": ["oracle-database-sql-associate", "mongodb-developer-associate", "azure-dp-300-database-admin", "snowflake-snowpro-core"]},
+    {"id": "product-delivery", "name": "Product & Delivery Leader", "tagline": "PM → Agile → Scaled leadership.", "accent": "blue",
+     "slugs": ["capm", "psm-i", "pmp", "safe-agilist"]},
+    {"id": "scrum-track", "name": "Scrum Practitioner", "tagline": "Master → Product Owner → Agile Coach.", "accent": "mint",
+     "slugs": ["psm-i", "csm-scrum-master", "cspo-product-owner", "pmi-acp"]},
 ]
 
 # ------------ Setup ------------
