@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaAws, FaMicrosoft, FaGoogle, FaDocker } from "react-icons/fa6";
-import { SiCisco, SiComptia, SiKubernetes, SiRedhat, SiDatabricks } from "react-icons/si";
-import { FaShieldHalved, FaBriefcase, FaCube } from "react-icons/fa6";
+import { SiCisco, SiComptia, SiKubernetes, SiRedhat, SiDatabricks, SiMongodb, SiPostgresql, SiSnowflake, SiTensorflow } from "react-icons/si";
+import { FaShieldHalved, FaBriefcase, FaCube, FaDatabase, FaBrain } from "react-icons/fa6";
 
 const vendorIcon = (v) => {
     const map = {
@@ -22,6 +22,16 @@ const vendorIcon = (v) => {
         "OffSec": FaShieldHalved,
         "PMI": FaBriefcase,
         "Scrum Alliance": FaBriefcase,
+        "Oracle": FaDatabase,
+        "VMware": FaCube,
+        "MongoDB": SiMongodb,
+        "EnterpriseDB": SiPostgresql,
+        "Snowflake": SiSnowflake,
+        "IBM": FaCube,
+        "DataStax": FaDatabase,
+        "NVIDIA": FaBrain,
+        "DeepLearning.AI": FaBrain,
+        "CertNexus": FaBrain,
     };
     return map[v] || FaCube;
 };
