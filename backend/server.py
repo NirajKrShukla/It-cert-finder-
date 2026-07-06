@@ -36,6 +36,8 @@ TRENDING_SLUGS = {
     "psm-i",
     "safe-agilist",
     "itil-4-foundation",
+    "finops-certified-practitioner",
+    "cobit-2019-foundation",
 }
 
 LEARNING_PATHS = [
@@ -59,6 +61,12 @@ LEARNING_PATHS = [
      "slugs": ["capm", "psm-i", "pmp", "safe-agilist"]},
     {"id": "scrum-track", "name": "Scrum Practitioner", "tagline": "Master → Product Owner → Agile Coach.", "accent": "mint",
      "slugs": ["psm-i", "csm-scrum-master", "cspo-product-owner", "pmi-acp"]},
+    {"id": "governance", "name": "IT Governance & Risk", "tagline": "COBIT → CRISC → CGEIT.", "accent": "magenta",
+     "slugs": ["cobit-2019-foundation", "cobit-2019-design", "isaca-crisc", "isaca-cgeit"]},
+    {"id": "salesforce", "name": "Salesforce Consultant", "tagline": "Associate → Admin → Sales/Service Cloud.", "accent": "blue",
+     "slugs": ["salesforce-associate", "salesforce-admin", "salesforce-platform-app-builder", "salesforce-sales-cloud-consultant", "salesforce-service-cloud-consultant"]},
+    {"id": "finops", "name": "Cloud FinOps", "tagline": "Practitioner → FOCUS → Professional.", "accent": "amber",
+     "slugs": ["finops-certified-practitioner", "finops-focus-analyst", "finops-certified-professional"]},
 ]
 
 # ------------ Setup ------------
