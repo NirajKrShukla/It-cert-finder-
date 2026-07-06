@@ -326,6 +326,77 @@ async def get_shared_path(share_id: str):
     doc["total_cost"] = sum(c.get("price_usd", 0) for c in ordered)
     return doc
 
+@api.get("/shared-paths/{share_id}/og.png")
+async def og_image(share_id: str):
+    from PIL import Image, ImageDraw, ImageFont
+    from fastapi.responses import Response as FResponse
+    import io
+    doc = await db.shared_paths.find_one({"share_id": share_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Path not found")
+    certs = await db.certificates.find({"slug": {"$in": doc["slugs"]}}, {"_id": 0}).to_list(500)
+    total = sum(c.get("price_usd", 0) for c in certs)
+    count = len(certs)
+    name = (doc.get("name") or "Learning Path")[:60]
+    author = doc.get("author_name", "Anonymous")[:40]
+
+    W, H = 1200, 630
+    img = Image.new("RGB", (W, H), (10, 14, 20))
+    d = ImageDraw.Draw(img)
+    # grid overlay
+    for x in range(0, W, 48):
+        d.line([(x, 0), (x, H)], fill=(30, 36, 46), width=1)
+    for y in range(0, H, 48):
+        d.line([(0, y), (W, y)], fill=(30, 36, 46), width=1)
+    # mint square logo
+    d.rectangle([60, 60, 108, 108], fill=(57, 255, 106))
+    d.text((72, 68), ">_", fill=(10, 14, 20))
+
+    def font(sz, bold=False):
+        for p in [
+            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+            "/usr/share/fonts/TTF/DejaVuSans.ttf",
+        ]:
+            try:
+                return ImageFont.truetype(p, sz)
+            except Exception:
+                pass
+        return ImageFont.load_default()
+
+    d.text((124, 68), "certhub", fill=(230, 237, 243), font=font(34, True))
+    d.text((124, 106), "/ shared learning path", fill=(125, 133, 144), font=font(18))
+
+    # accent tag
+    d.text((60, 175), f"// by {author}", fill=(57, 255, 106), font=font(22, True))
+    # title (wrap simple)
+    words = name.split(" ")
+    lines, cur = [], ""
+    for w in words:
+        test = (cur + " " + w).strip()
+        if len(test) > 26 and cur:
+            lines.append(cur); cur = w
+        else:
+            cur = test
+    if cur: lines.append(cur)
+    y = 215
+    for ln in lines[:2]:
+        d.text((60, y), ln, fill=(255, 255, 255), font=font(78, True)); y += 84
+
+    # stats row bottom
+    d.rectangle([60, 480, W-60, 484], fill=(33, 38, 45))
+    d.text((60, 510), "CERTS",  fill=(125, 133, 144), font=font(18, True))
+    d.text((60, 538), str(count), fill=(57, 255, 106), font=font(56, True))
+    d.text((280, 510), "TOTAL COST", fill=(125, 133, 144), font=font(18, True))
+    d.text((280, 538), f"${total}", fill=(255, 176, 32), font=font(56, True))
+    d.text((560, 510), "SHARE ID", fill=(125, 133, 144), font=font(18, True))
+    d.text((560, 538), share_id, fill=(78, 154, 255), font=font(40, True))
+    d.text((W-360, 538), "certhub.app", fill=(125, 133, 144), font=font(28, True))
+
+    buf = io.BytesIO()
+    img.save(buf, format="PNG", optimize=True)
+    return FResponse(content=buf.getvalue(), media_type="image/png",
+                     headers={"Cache-Control": "public, max-age=86400"})
+
 # ------------ AI Enrichment (Claude) ------------
 class AIQueryIn(BaseModel):
     query: str = Field(min_length=2, max_length=200)
