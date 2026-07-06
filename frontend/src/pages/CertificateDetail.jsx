@@ -121,6 +121,9 @@ export default function CertificateDetail() {
                             <button onClick={toggleFav} className="btn w-full" data-testid="favorite-btn">
                                 {isFav ? <FaBookmark /> : <FaRegBookmark />} {isFav ? "Saved" : "Save to Dashboard"}
                             </button>
+                            <Link to={`/compare?a=${cert.slug}`} className="btn btn-ghost w-full" data-testid="compare-cta">
+                                Compare with another →
+                            </Link>
                         </div>
                     </div>
                 </aside>

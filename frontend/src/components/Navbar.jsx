@@ -25,6 +25,7 @@ export default function Navbar() {
                     <Link to="/?domain=ai" className="hover:text-[#39FF6A]" data-testid="nav-ai">AI</Link>
                     <Link to="/?domain=security" className="hover:text-[#39FF6A]" data-testid="nav-security">Security</Link>
                     <Link to="/?domain=database" className="hover:text-[#39FF6A]" data-testid="nav-db">Databases</Link>
+                    <Link to="/compare" className="hover:text-[#39FF6A]" data-testid="nav-compare">Compare</Link>
                 </nav>
 
                 <div className="flex items-center gap-3">
