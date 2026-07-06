@@ -1,0 +1,106 @@
+{
+  "theme_and_archetype": {
+    "domain": "Tech/Education Directory",
+    "theme": "Light",
+    "archetype": "4 (Swiss & High-Contrast)",
+    "reasoning": "Authority, clarity, and function-first, but bold and modern. The objective is to make the app feel like a modern tech magazine cataloging knowledge. Strict grids, stark contrasts."
+  },
+  "typography": {
+    "imports": "@import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@400,500,700&display=swap'); \n@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');",
+    "headings": {
+      "font_family": "'Clash Display', sans-serif",
+      "font_weight": "bold",
+      "rules": "Tracking-tight, never center-aligned by default. Use fluid scaling text-4xl to text-6xl+ for heroes. NO Inter or Roboto for headings."
+    },
+    "body": {
+      "font_family": "'Satoshi', sans-serif",
+      "font_weight": "normal",
+      "rules": "Clean and objective. leading-relaxed for long text, tight for labels."
+    },
+    "mono_and_tags": {
+      "font_family": "'JetBrains Mono', monospace",
+      "rules": "Use for pricing, level badges, and technical meta-data (e.g., duration). Uppercase, wide spacing (tracking-widest), smaller text sizes (text-xs/text-sm)."
+    }
+  },
+  "color_palette": {
+    "base": {
+      "background": "#FFFFFF",
+      "surface": "#F4F5F6",
+      "border": "#171717"
+    },
+    "text": {
+      "primary": "#0A0A0A",
+      "secondary": "#52525B"
+    },
+    "accents": {
+      "primary": "#002FA7",
+      "primary_hover": "#001D6B",
+      "secondary": "#FF3B30",
+      "highlight": "#E4FF00"
+    },
+    "rules": "High contrast minimal look. Pure monochrome structure with sudden sharp bursts of International Klein Blue (#002FA7) or Highlighter Yellow (#E4FF00) for calls to action, pricing highlights, or tags."
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous Spacing + Strict Grids",
+    "grid_mode": "Grid Borders (The Technical Look). Expose the skeleton, make the grid visible using border-collapse or 1px solid black borders around containers.",
+    "paddings": "p-8 to p-12 for major containers. Containers with borders must have internal padding.",
+    "alignment": "Strict left-alignment. Asymmetry creates tension. Do NOT center everything."
+  },
+  "components": {
+    "buttons": "Flat, sharp corners (rounded-none), thick 1px or 2px black border, solid fill or transparent with heavy hover states. Use the primary accent color (#002FA7) for the main CTA.",
+    "cards_certificate_listings": "Swiss Brutalism: 1px solid black border, 0px radius (rounded-none), flat background (White or Light Grey). Hover state translates card up by -4px and adds a harsh solid shadow (shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]).",
+    "inputs_and_filters": "Flat checkboxes, large touch targets, no generic drop shadows. Inputs have 1px solid border, focus state uses 2px solid primary color (#002FA7) ring.",
+    "badges": "JetBrains Mono font, uppercase, text-xs, thick borders, highly visible background colors like #E4FF00 or #F4F5F6.",
+    "navigation": "Sticky, solid background (bg-white) with 1px border-b border-black. Navigation links must be bold, visible on desktop."
+  },
+  "motion_and_interactions": {
+    "hover_states": "Crisp and instant. Background color flips, borders thicken, or strict translation (-translate-y-1).",
+    "transitions": "transition-all duration-200 ease-in-out.",
+    "focus_states": "High contrast rings (ring-2 ring-[#002FA7] ring-offset-2)."
+  },
+  "icons_and_assets": {
+    "library": "Use `react-icons/fa` or `react-icons/si` for all vendor logos (e.g., `FaAws`, `FaMicrosoft`, `FaGoogle`, `FaApple`) and UI icons. DO NOT use placeholder text or dummy image urls. If using Shadcn primitives, `lucide-react` is also acceptable for UI but not brand logos.",
+    "rules": "Icons must match the stroke and weight of the typography. Vendor logos in the directory should be prominent and high-contrast."
+  },
+  "image_urls": {
+    "hero_backgrounds": [
+      {
+        "url": "https://images.unsplash.com/photo-1526289034009-0240ddb68ce3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGhpZ2glMjBjb250cmFzdCUyMGdyaWR8ZW58MHx8fHwxNzgzMzI1OTc2fDA&ixlib=rb-4.1.0&q=85",
+        "category": "Hero abstract texture",
+        "description": "High contrast abstract grid, use with heavy opacity overlay or mix-blend-mode for the hero search section. Or use as a subtle dark background in a dedicated hero block."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzd8MHwxfHNlYXJjaHwyfHxjb21wdXRlciUyMGNvZGUlMjBzY3JlZW58ZW58MHx8fHwxNzgzMzI1OTkxfDA&lib=rb-4.1.0&q=85",
+        "category": "Tech context banner",
+        "description": "Computer code screen, for tech learning context."
+      }
+    ],
+    "learning_context": [
+      {
+        "url": "https://images.pexels.com/photos/5530447/pexels-photo-5530447.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "Students learning",
+        "description": "Students focused in a modern computer lab. Good for 'About' or 'Learning paths' sections."
+      },
+      {
+        "url": "https://images.pexels.com/photos/7063747/pexels-photo-7063747.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "Studying person",
+        "description": "Person studying at desk. Good for dashboard motivation."
+      }
+    ]
+  },
+  "page_layouts": {
+    "homepage": "Massive typography in the hero section saying something like 'The Definitive Directory for Tech Certifications'. A large, prominent search bar stretching at least 8 columns in a 12-col grid. Below that, a layout for featured certificates. Sidebar for filters (Vendor, Level, Domain, Price) sticking to the left, and a dense list of certificate cards on the right. Every card explicitly shows Cost and Level.",
+    "certificate_detail_page": "Split screen layout. Left side: fixed/sticky container holding the Certificate Name, Vendor Logo, Cost, Level, and primary CTA (e.g., 'View Official Docs'). Right side: scrolling content with detailed syllabus, pre-requisites, recommended YouTube video links (use YouTube embeds or stylised links), and practice tests.",
+    "dashboard": "Minimal control-room grid. Saved certificates displayed as dense rows rather than massive cards. Quick links to resume learning."
+  },
+  "instructions_to_main_agent": [
+    "Load fonts properly in index.css using the provided imports.",
+    "DO NOT use Inter or Roboto for anything.",
+    "DO NOT use generic Shadcn cards without modifying them. Strip away rounded corners and soft shadows. Apply `rounded-none border-black border` instead.",
+    "Ensure all interactive elements have data-testid attributes (e.g. data-testid='search-input', data-testid='filter-vendor-aws').",
+    "Use react-icons (e.g., FaAws, SiMicrosoftazure, SiGooglecloud) for Vendor logos instead of image placeholders.",
+    "Do NOT use transparent backgrounds for the sticky header; use solid white.",
+    "Ensure the hero search bar is exceptionally prominent, perhaps an entire row in the grid.",
+    "In the search result list, distinctly emphasize the PRICE and LEVEL using the high-contrast accent colors (#002FA7 or #E4FF00 background)."
+  ]
+}
